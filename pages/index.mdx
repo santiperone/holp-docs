@@ -1,11 +1,48 @@
 # Introduction
  
-Welcome to Nextra! This is a basic docs template. You can use it as a starting point for your own project :)
+Welcome to Holp!
 
-## What is Nextra?
+## What is Holp?
 
-A **simple**, **powerful** and **flexible** site generation framework with everything you love from Next.js.
+Holp is a library that **simplifies** common **AWS Lambda** patterns, reducing boilerplate code and promoting **best practices**. 
+It facilitates consistent error handling and wraps our handler using a higher-order function approach. 
+The name "holp" stands for "Higher-Order Lambda Proxies" drawing inspiration from the concept of Higher-Order Components (HOC) in React. 
+Think of holp as a HOC for Lambda handlers, streamlining response management and error handling for more efficient and consistent serverless development.
 
-## Documentation
+## A quick example
 
-The documentation is available at [https://nextra.site](https://nextra.site).
+```typescript
+import { APIGatewayEvent } from "aws-lambda";
+import { withApiGateway, ApiGatewayParsedEvent } from "holp";
+import { BadRequestError } from "holp/errors";
+import logger from 'my-logging-library';
+
+interface MyEvent extends ApiGatewayParsedEvent {
+  body: {
+    someParam: string,
+  },
+  queryStringParameters: {
+    someQueryParam: string,
+  }
+};
+
+export const myLambdaFunction = async (event: MyEvent) => {
+  const someParam = event.body.someParam;
+  const someQueryParam = event.queryStringParameters.someQueryParam;
+  logger.info('Some insightful log message.')
+  const result = await someAsyncTask(someParam, someQueryParam);
+  if (result.length === 0) {
+    throw new BadRequestError("Result does not exist.");
+  }
+  return { result }
+}
+
+export const Handler = withAPIGateway(myLambdaFunction, { logger });
+```
+
+### Why?
+
+One of the main strengths of serverless and AWS Lambda is that, from a developer perspective, your focus is mostly shifted toward implementing business logic.
+Anyway, when you are writing a handler, you still have to deal with some common technical concerns outside business logic, like input parsing and validation, output serialization, error handling, etc.
+Very often, all this necessary code ends up polluting the pure business logic code in your handlers, making the code harder to read and to maintain.
+Holp aims to solve this problem in a simple and elegant way, by providing a set of opinionated tools that can be used to wrap your handlers, so that you can focus on the business logic and let Holp take care of the rest.
