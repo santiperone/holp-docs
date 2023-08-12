@@ -50,7 +50,7 @@ const config: DocsThemeConfig = {
     link: 'https://github.com/santiperone/holp',
   },
   docsRepositoryBase:
-    'https://github.com/santiperone/holp-docs/tree/main/pages',
+    'https://github.com/santiperone/holp-docs/tree/main',
   footer: {
     text: 'Higher Order Lambda Proxies docs',
   },
